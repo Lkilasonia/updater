@@ -3,7 +3,7 @@
 * Plugin Name: Updater
 * Plugin URI: https://github.com/Lkilasonia/updater
 * Description: This is a Fun Plugin.
-* Version: 1.0
+* Version: 2.0
 * Author: Lasha Kilasonia
 * Author URI: https://elementar.ge
 **/
