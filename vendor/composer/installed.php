@@ -3,7 +3,7 @@
         'name' => 'lkilasonia/updater',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '80a26c530a2b0862c2512bf9d1f60c71a64d8752',
+        'reference' => '39cb6aaf61873c7ba4ba3a0ffffee5eae976e6fd',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -31,7 +31,7 @@
         'lkilasonia/updater' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '80a26c530a2b0862c2512bf9d1f60c71a64d8752',
+            'reference' => '39cb6aaf61873c7ba4ba3a0ffffee5eae976e6fd',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
