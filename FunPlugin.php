@@ -3,7 +3,7 @@
  * Plugin Name: Updater
  * Plugin URI: https://github.com/Lkilasonia/updater
  * Description: This is a Fun Plugin.
- * Version: 5.0
+ * Version: 2.0
  * Author: Lasha Kilasonia
  * Author URI: https://elementar.ge
  */
@@ -31,8 +31,7 @@ function get_github_version($repo) {
     $args = array(
         'headers' => array(
             'Accept' => 'application/vnd.github.v3+json',
-            'User-Agent' => 'WordPress Plugin Updater',
-            'Authorization' => 'token ' . getenv('GITHUB_ACCESS_TOKEN'),
+            'User-Agent' => 'WordPress Plugin Updater'
         ),
     );
 
@@ -51,7 +50,6 @@ function get_github_version($repo) {
 
     return false;
 }
-
 
 function show_update_notification() {
     ?>
@@ -85,7 +83,6 @@ function plugin_update($transient) {
 }
 
 add_filter('pre_set_site_transient_update_plugins', 'plugin_update');
-add_filter('plugins_api', 'plugin_update_info', 20, 3);
 
 function plugin_update_info($res, $action, $args) {
     $plugin_slug = plugin_basename(__FILE__);
@@ -121,4 +118,6 @@ function plugin_update_info($res, $action, $args) {
 
     return $res;
 }
+
+add_filter('plugins_api', 'plugin_update_info', 20, 3);
 ?>
