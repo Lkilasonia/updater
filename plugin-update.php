@@ -3,8 +3,8 @@
  * Plugin Name: Updater
  * Plugin URI: https://github.com/Lkilasonia/updater
  * Description: This is a Fun Plugin.
- * Version: 3.0
- * Author: Lasha Kilasonia
+ * Version: 5.0
+ * Author: Lasha
  * Author URI: https://elementar.ge
  */
 
@@ -18,9 +18,6 @@ require_once __DIR__ . '/vendor/autoload.php';
 // Hard-code the GitHub Access Token
 $github_access_token = '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'; // Replace 'your-access-token-here' with your actual GitHub access token
 
-// Debugging: Log the access token to ensure it's being read correctly
-error_log('GitHub Access Token: ' . $github_access_token);
-
 // Check for plugin updates
 add_action('admin_init', 'check_for_plugin_update');
 
@@ -30,7 +27,7 @@ function check_for_plugin_update() {
     $repo = 'Lkilasonia/updater';
     $github_response = get_github_version($repo);
 
-    if ($github_response && version_compare($current_version, $github_response['tag_name'], '<')) {
+    if ($github_response && version_compare($current_version, ltrim($github_response['tag_name'], 'v'), '<')) {
         add_action('admin_notices', 'show_update_notification');
     }
 }
@@ -66,9 +63,20 @@ function get_github_version($repo) {
 }
 
 function show_update_notification() {
+    global $github_response;
+    $plugin_data = get_plugin_data(__FILE__);
+    $new_version = ltrim($github_response['tag_name'], 'v');
     ?>
     <div class="notice notice-warning is-dismissible">
-        <p><?php _e('There is a new version of the Updater plugin available. Please update to the latest version.', 'text-domain'); ?></p>
+        <p>
+            <?php printf(
+                __('There is a new version of %1$s available. <a href="%2$s">View version %3$s details</a> or <a href="%4$s">update now</a>.', 'text-domain'),
+                esc_html($plugin_data['Name']),
+                esc_url('https://github.com/Lkilasonia/updater/releases/tag/' . $github_response['tag_name']),
+                esc_html($new_version),
+                esc_url(wp_nonce_url(self_admin_url('update.php?action=upgrade-plugin&plugin=' . plugin_basename(__FILE__)), 'upgrade-plugin_' . plugin_basename(__FILE__)))
+            ); ?>
+        </p>
     </div>
     <?php
 }
@@ -83,11 +91,11 @@ function plugin_update($transient) {
     $repo = 'Lkilasonia/updater';
     $github_response = get_github_version($repo);
 
-    if ($github_response && version_compare($current_version, $github_response['tag_name'], '<')) {
+    if ($github_response && version_compare($current_version, ltrim($github_response['tag_name'], 'v'), '<')) {
         $plugin_slug = plugin_basename(__FILE__);
         $transient->response[$plugin_slug] = (object) array(
             'slug' => $plugin_slug,
-            'new_version' => $github_response['tag_name'],
+            'new_version' => ltrim($github_response['tag_name'], 'v'),
             'url' => $plugin_data['PluginURI'],
             'package' => $github_response['zipball_url'],
         );
@@ -118,7 +126,7 @@ function plugin_update_info($res, $action, $args) {
     $res = (object) array(
         'name' => $plugin_data['Name'],
         'slug' => $plugin_slug,
-        'version' => $github_response['tag_name'],
+        'version' => ltrim($github_response['tag_name'], 'v'),
         'author' => $plugin_data['Author'],
         'author_profile' => $plugin_data['AuthorURI'],
         'homepage' => $plugin_data['PluginURI'],
