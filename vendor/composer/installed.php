@@ -1,21 +1,21 @@
 <?php return array(
     'root' => array(
-        'name' => '__root__',
+        'name' => 'lkilasonia/updater',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '2375f8723418f1a052a978eeec0af72a21c097a6',
-        'type' => 'library',
+        'reference' => '80a26c530a2b0862c2512bf9d1f60c71a64d8752',
+        'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        '__root__' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => '2375f8723418f1a052a978eeec0af72a21c097a6',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../../',
+        'composer/installers' => array(
+            'pretty_version' => 'v1.12.0',
+            'version' => '1.12.0.0',
+            'reference' => 'd20a64ed3c94748397ff5973488761b22f6d3f19',
+            'type' => 'composer-plugin',
+            'install_path' => __DIR__ . '/./installers',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -28,6 +28,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'lkilasonia/updater' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '80a26c530a2b0862c2512bf9d1f60c71a64d8752',
+            'type' => 'wordpress-plugin',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'phpoption/phpoption' => array(
             'pretty_version' => '1.9.2',
             'version' => '1.9.2.0',
@@ -36,6 +45,18 @@
             'install_path' => __DIR__ . '/../phpoption/phpoption',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'roundcube/plugin-installer' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '*',
+            ),
+        ),
+        'shama/baton' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '*',
+            ),
         ),
         'symfony/polyfill-ctype' => array(
             'pretty_version' => 'v1.30.0',
