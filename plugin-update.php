@@ -3,7 +3,7 @@
  * Plugin Name: Updater
  * Plugin URI: https://github.com/Lkilasonia/updater
  * Description: This is a Fun Plugin.
- * Version: 2.0
+ * Version: 3.0
  * Author: Lasha Kilasonia
  * Author URI: https://elementar.ge
  */
@@ -15,9 +15,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Load Composer autoload
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Load environment variables
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+// Load environment variables if the .env file exists
+$dotenv_file = __DIR__ . '/.env';
+if (file_exists($dotenv_file)) {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+    $dotenv->load();
+} else {
+    error_log('.env file not found. Please create the file and add your environment variables.');
+}
 
 // Check for plugin updates
 add_action('admin_init', 'check_for_plugin_update');
