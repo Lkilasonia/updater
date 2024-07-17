@@ -12,6 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
+// Load environment variables
+require_once __DIR__ . '/vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 // Check for plugin updates
 add_action('admin_init', 'check_for_plugin_update');
 
@@ -31,13 +36,15 @@ function get_github_version($repo) {
     $args = array(
         'headers' => array(
             'Accept' => 'application/vnd.github.v3+json',
-            'User-Agent' => 'WordPress Plugin Updater'
+            'User-Agent' => 'WordPress Plugin Updater',
+            'Authorization' => 'token ' . getenv('GITHUB_ACCESS_TOKEN'),
         ),
     );
 
     $response = wp_remote_get($url, $args);
 
     if (is_wp_error($response)) {
+        error_log('GitHub API request failed: ' . $response->get_error_message());
         return false;
     }
 
@@ -45,9 +52,11 @@ function get_github_version($repo) {
     $data = json_decode($body, true);
 
     if (isset($data['tag_name'])) {
+        error_log('GitHub API response: ' . print_r($data, true));
         return $data;
     }
 
+    error_log('GitHub API response does not contain tag_name: ' . $body);
     return false;
 }
 
@@ -77,6 +86,7 @@ function plugin_update($transient) {
             'url' => $plugin_data['PluginURI'],
             'package' => $github_response['zipball_url'],
         );
+        error_log('Plugin update detected: ' . print_r($transient->response[$plugin_slug], true));
     }
 
     return $transient;
@@ -115,6 +125,8 @@ function plugin_update_info($res, $action, $args) {
         'download_link' => $github_response['zipball_url'],
         'last_updated' => $github_response['published_at'],
     );
+
+    error_log('Plugin information response: ' . print_r($res, true));
 
     return $res;
 }
