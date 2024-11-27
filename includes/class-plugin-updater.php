@@ -40,30 +40,39 @@ class PluginUpdater {
             error_log('No plugins checked for updates.');
             return $transient;
         }
-
+    
         $plugin_file = plugin_dir_path(__DIR__) . 'updater.php';
+        $plugin_slug = plugin_basename($plugin_file);
         $plugin_data = get_plugin_data($plugin_file);
         $current_version = isset($plugin_data['Version']) ? $plugin_data['Version'] : '';
+    
         error_log('Current Version: ' . $current_version);
-
+        error_log('Plugin Slug: ' . $plugin_slug);
+    
         $repo = 'Lkilasonia/updater';
         $github_response = self::$github_api->get_latest_release($repo);
-
-        if ($github_response && version_compare($current_version, $github_response['tag_name'], '<')) {
-            $plugin_slug = plugin_basename($plugin_file);
-
-            $transient->response[$plugin_slug] = (object) array(
-                'slug'        => $plugin_slug,
-                'new_version' => $github_response['tag_name'],
-                'url'         => $plugin_data['PluginURI'],
-                'package'     => $github_response['zipball_url'],
-            );
-
-            error_log('Transient response updated: ' . print_r($transient->response[$plugin_slug], true));
+    
+        if ($github_response) {
+            $github_version = ltrim($github_response['tag_name'], 'v');
+            error_log('GitHub Version: ' . $github_version);
+    
+            if (version_compare($current_version, $github_version, '<')) {
+                $transient->response[$plugin_slug] = (object) array(
+                    'slug'        => $plugin_slug,
+                    'new_version' => $github_version,
+                    'url'         => $plugin_data['PluginURI'],
+                    'package'     => $github_response['zipball_url'],
+                );
+    
+                error_log('Transient response updated: ' . print_r($transient->response[$plugin_slug], true));
+            }
+        } else {
+            error_log('No GitHub response for updates.');
         }
-
+    
         return $transient;
     }
+    
 
     public static function plugin_information($res, $action, $args) {
         $plugin_file = plugin_dir_path(__DIR__) . 'updater.php';
