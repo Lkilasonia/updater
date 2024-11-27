@@ -53,7 +53,7 @@ class PluginUpdater {
         $github_response = self::$github_api->get_latest_release($repo);
     
         if ($github_response) {
-            $github_version = ltrim($github_response['tag_name'], 'v');
+            $github_version = ltrim($github_response['tag_name'], 'v'); // Remove 'v'
             error_log('GitHub Version: ' . $github_version);
     
             if (version_compare($current_version, $github_version, '<')) {
@@ -63,8 +63,9 @@ class PluginUpdater {
                     'url'         => $plugin_data['PluginURI'],
                     'package'     => $github_response['zipball_url'],
                 );
-    
                 error_log('Transient response updated: ' . print_r($transient->response[$plugin_slug], true));
+            } else {
+                error_log('No update needed: Current version is up-to-date.');
             }
         } else {
             error_log('No GitHub response for updates.');
@@ -72,6 +73,7 @@ class PluginUpdater {
     
         return $transient;
     }
+    
     
 
     public static function plugin_information($res, $action, $args) {
@@ -94,19 +96,16 @@ class PluginUpdater {
         $res = (object) array(
             'name'              => $plugin_data['Name'],
             'slug'              => $plugin_slug,
-            'version'           => $github_response['tag_name'],
+            'version'           => $github_version,
             'author'            => $plugin_data['Author'],
-            'author_profile'    => $plugin_data['AuthorURI'],
             'homepage'          => $plugin_data['PluginURI'],
+            'download_link'     => $github_response['zipball_url'],
             'short_description' => $plugin_data['Description'],
             'sections'          => array(
                 'description' => $plugin_data['Description'],
                 'changelog'   => isset($github_response['body']) ? $github_response['body'] : '',
             ),
-            'download_link'     => $github_response['zipball_url'],
-            'last_updated'      => $github_response['published_at'],
         );
-
         return $res;
     }
 }
