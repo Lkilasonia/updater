@@ -42,7 +42,7 @@ class PluginUpdater {
         }
     
         $plugin_file = plugin_dir_path(__DIR__) . 'updater.php';
-        $plugin_slug = plugin_basename(__DIR__ . '/updater.php');
+        $plugin_slug = plugin_basename($plugin_file);
         $plugin_data = get_plugin_data($plugin_file);
         $current_version = isset($plugin_data['Version']) ? $plugin_data['Version'] : '';
     
@@ -72,7 +72,6 @@ class PluginUpdater {
     
         return $transient;
     }
-    
     
 
     public static function plugin_information($res, $action, $args) {
